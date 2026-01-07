@@ -1,6 +1,6 @@
 {
   "name": "file-preview-property-enhanced",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Add file preview contents under file in file explorer. (forked from File Preview)",
   "main": "main.js",
   "scripts": {

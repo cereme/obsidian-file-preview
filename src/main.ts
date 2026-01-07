@@ -93,7 +93,7 @@ export default class FilePreview extends Plugin {
     }, 10);
 
     this.app.workspace.on("editor-change", debouncedRefresh);
-    
+
     // Listen for metadata changes (including frontmatter summary updates)
     this.registerEvent(
       this.app.metadataCache.on("changed", (file) => {
@@ -294,15 +294,6 @@ export default class FilePreview extends Plugin {
         return;
       }
       // item.selfEl.classList.add("fp-nav-file");
-      this.previewContentsEl.push(
-        item.selfEl.createEl("div", {
-          text: this.settings.showPropertiesOnly ? "" : formattedContents,
-          attr: {
-            class: "tree-item-inner nav-file-details",
-            style: `-webkit-line-clamp: ${this.settings.lineClamp}; text-indent: ${this.settings.indents}em;`,
-          },
-        })
-      );
 
       if (this.settings.showFileProperties) {
         const ctime = moment(file.stat.ctime).format(
@@ -327,6 +318,17 @@ export default class FilePreview extends Plugin {
           })
         );
       }
+
+      this.previewContentsEl.push(
+        item.selfEl.createEl("div", {
+          text: this.settings.showPropertiesOnly ? "" : formattedContents,
+          attr: {
+            class: "tree-item-inner nav-file-details",
+            style: `-webkit-line-clamp: ${this.settings.lineClamp}; text-indent: ${this.settings.indents}em;`,
+          },
+        })
+      );
+      
       if (this.settings.showImg) {
         let imgpath = this.getFirstImgPath(contents);
         if (!imgpath || item.el.querySelector('.nav-file-img')) { return; }
