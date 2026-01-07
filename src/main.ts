@@ -61,11 +61,11 @@ export default class FilePreview extends Plugin {
     this.registerCommands();
 
     // Add hot reload with debounce
-    const debounce = (func: () => void, wait: number) => {
+    const debounce = <T extends (...args: any[]) => void>(func: T, wait: number) => {
       let timeout: number;
-      return () => {
+      return (...args: Parameters<T>) => {
         clearTimeout(timeout);
-        timeout = window.setTimeout(() => func.apply(this), wait);
+        timeout = window.setTimeout(() => func.apply(this, args), wait);
       };
     };
 
@@ -83,7 +83,25 @@ export default class FilePreview extends Plugin {
       }
     }, 10);
 
+    const debouncedRefreshByFile = debounce(async (file: TFile) => {
+      if (this.settings.showpreview && this.settings.ispreview) {
+        const fileItem = this.fileExplorerView.fileItems[file.path];
+        if (fileItem) {
+          this.displayPreviewContentsByFileItem(fileItem);
+        }
+      }
+    }, 10);
+
     this.app.workspace.on("editor-change", debouncedRefresh);
+    
+    // Listen for metadata changes (including frontmatter summary updates)
+    this.registerEvent(
+      this.app.metadataCache.on("changed", (file) => {
+        if (file instanceof TFile && file.extension === "md") {
+          debouncedRefreshByFile(file);
+        }
+      })
+    );
 
     // file-menu 右键菜单：将文件/文件夹排除在外
     this.app.workspace.on("file-menu", (menu, file) => {
@@ -252,7 +270,7 @@ export default class FilePreview extends Plugin {
       }
       if (item.innerEl && item.el.querySelector(".nav-file-details")) {
         const currentContentEl = item.selfEl.querySelector(".tree-item-inner.nav-file-details");
-        if (currentContentEl && formattedContents !== currentContentEl.innerHTML) {
+        if (!this.settings.showPropertiesOnly && currentContentEl && formattedContents !== currentContentEl.innerHTML) {
           currentContentEl.innerHTML = formattedContents;
         }
         if (this.settings.showFileProperties) {
