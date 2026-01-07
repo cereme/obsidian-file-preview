@@ -1,7 +1,7 @@
 {
-  "name": "file-preview",
-  "version": "1.1.3",
-  "description": "Add file preview contents under file in file explorer.",
+  "name": "file-preview-property-enhanced",
+  "version": "1.0.0",
+  "description": "Add file preview contents under file in file explorer. (forked from File Preview)",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
