@@ -262,9 +262,12 @@ export default class FilePreview extends Plugin {
           const mtime = moment(file.stat.mtime).format(
             this.settings.mtimeFormat
           );
+          const cache = this.app.metadataCache.getFileCache(file);
+          const summary = cache?.frontmatter?.summary || "";
           const timeInfoString = this.settings.propertiesFormat
             .replace("ctime", ctime)
-            .replace("mtime", mtime);
+            .replace("mtime", mtime)
+            .replace("summary", summary);
           const currentPropertiesEl = item.selfEl.querySelector(".nav-file-properties");
           if (currentPropertiesEl) {
             currentPropertiesEl.innerHTML = timeInfoString;
@@ -275,7 +278,7 @@ export default class FilePreview extends Plugin {
       // item.selfEl.classList.add("fp-nav-file");
       this.previewContentsEl.push(
         item.selfEl.createEl("div", {
-          text: formattedContents,
+          text: this.settings.showPropertiesOnly ? "" : formattedContents,
           attr: {
             class: "tree-item-inner nav-file-details",
             style: `-webkit-line-clamp: ${this.settings.lineClamp}; text-indent: ${this.settings.indents}em;`,
@@ -290,9 +293,12 @@ export default class FilePreview extends Plugin {
         const mtime = moment(file.stat.mtime).format(
           this.settings.mtimeFormat
         );
+        const cache = this.app.metadataCache.getFileCache(file);
+        const summary = cache?.frontmatter?.summary || "";
         const timeInfoString = this.settings.propertiesFormat
           .replace("ctime", ctime)
-          .replace("mtime", mtime);
+          .replace("mtime", mtime)
+          .replace("summary", summary);
 
         this.previewContentsEl.push(
           item.selfEl.createEl("div", {

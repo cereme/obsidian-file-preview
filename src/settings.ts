@@ -12,6 +12,7 @@ export interface FilePreviewSettings {
   format: FormatSetting;
   showImg: boolean;
   showFileProperties: boolean;
+  showPropertiesOnly: boolean;
   ctimeFormat: string;
   mtimeFormat: string;
   propertiesFormat: string;
@@ -38,6 +39,7 @@ export const DEFAULT_SETTINGS: FilePreviewSettings = {
   },
   showImg: true,
   showFileProperties: false,
+  showPropertiesOnly: false,
   ctimeFormat: 'YYYY-MM-DD HH:mm:ss',
   mtimeFormat: 'YYYY-MM-DD HH:mm:ss',
   propertiesFormat: `${t('created at')} ctime, ${t('updated at')} mtime`,
@@ -252,6 +254,16 @@ export class FilePreviewSettingTab extends PluginSettingTab {
 
     // File Properties
     new Setting(containerEl).setName(t('File properties')).setHeading();
+
+    new Setting(containerEl)
+      .setName(("Show properties only"))
+      .setDesc(("Ignore preview contents and show properties only."))
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.showPropertiesOnly)
+        .onChange(async (value) => {
+          this.plugin.settings.showPropertiesOnly = value;
+          await this.plugin.saveSettings();
+        }));
 
     new Setting(containerEl)
       .setName(t("Display properties"))
